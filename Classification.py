@@ -51,35 +51,35 @@ def rgb2gray(img):
 
 
 
-#Below is a series of test
-#
-#Red channel of a picture with lable 1
-similar_pictures = []
-for i in range(0,len(training_data[0])):
-	if training_lables[0][i] == 1:
-		pic_red_channel = training_data[0][i][0:1024]
-		similar_pictures.append(pic_red_channel)
+# #Below is a series of test
+# #
+# #Red channel of a picture with lable 1
+# similar_pictures = []
+# for i in range(0,len(training_data[0])):
+# 	if training_lables[0][i] == 1:
+# 		pic_red_channel = training_data[0][i][0:1024]
+# 		similar_pictures.append(pic_red_channel)
 
-#Red channel of a picture with different lable 
-similar_pictures2 = []
-for i in range(0,len(training_data[0])):
-	if training_lables[0][i] == 6:
-		pic_red_channel = training_data[0][i][0:1024]
-		similar_pictures2.append(pic_red_channel)
-
-
-
-# print(distance(similar_pictures[0],similar_pictures[10]))
-
-print(training_lables[0][0])
-
-pylab.figure()
-pylab.gray()
-pylab.imshow(similar_pictures2[0].reshape(32,32))
+# #Red channel of a picture with different lable 
+# similar_pictures2 = []
+# for i in range(0,len(training_data[0])):
+# 	if training_lables[0][i] == 6:
+# 		pic_red_channel = training_data[0][i][0:1024]
+# 		similar_pictures2.append(pic_red_channel)
 
 
-pylab.figure()
-pylab.gray()
-pylab.imshow(rgb2gray(training_data[0][0]).reshape(32,32))
 
-pylab.show()
+# # print(distance(similar_pictures[0],similar_pictures[10]))
+
+# print(training_lables[0][0])
+
+# pylab.figure()
+# pylab.gray()
+# pylab.imshow(similar_pictures2[0].reshape(32,32))
+
+
+# pylab.figure()
+# pylab.gray()
+# pylab.imshow(rgb2gray(training_data[0][0]).reshape(32,32))
+
+# pylab.show()
