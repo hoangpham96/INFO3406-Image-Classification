@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib as pl
 import pickle
 import pylab
+from datetime import datetime
 
 #Unpickling a file and returning its content
 def unpickle(file):
@@ -49,7 +50,49 @@ def rgb2gray(img):
 	return gray
 
 
+class NearestNeighbor:
+	def _init_(self):
+		pass
+	
+	def train(self, X,y):
+		"""input	X -> training set features
+					y -> labels of training sets"""
+		""" X is N x D where each row is an example. Y is 1- dimension of size N """
+		# the nearest neighbor classifier simply remembers all the training data
+		self.Xtr = X
+		self.ytr = np.array(y)
+	
+	def predict(self, X):
+		""" X is N x D where each row is an example we wish to predict label for """
+		num_test = X.shape[0]
+		Ypred = np.zeros(num_test, dtype=self.ytr.dtype)
+		
+		#loop over all test rows
+		for i in range(num_test):
+		# find the nearest training image to the ith test image
+		#using the L1 distance (sum of absoulte value differences)
+			distances = np.sum(np.abs(self.Xtr - X[i,:]), axis = 1)
+			min_index = np.argmin(distances) #get the index with smallest distance
+			Ypred[i] = self.ytr[min_index] #predict the label of the nearest example
+			
+		return Ypred
 
+time_start = datetime.now()
+
+NN = NearestNeighbor();
+NN.train(training_data[0][0:100],training_lables[0][0:100])
+result = NN.predict(test_data[0:100])
+
+count = 0
+for i in range(100):
+	 if result[i] == test_label[i]:
+	 	count += 1
+print(count)
+
+time_finished = datetime.now()
+
+duration = time_finished - time_start
+print(duration)
 
 # #Below is a series of test
 # #
