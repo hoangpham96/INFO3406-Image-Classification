@@ -13,7 +13,10 @@ def unpickle(file):
 	except:
 		import pickle
 	fo = open(file, 'rb')
-	dict = pickle.load(fo, encoding='latin1')
+	try:
+		dict = pickle.load(fo, encoding='latin1')
+	except:
+		dict = pickle.load(fo)
 	fo.close()
 	return dict
 
