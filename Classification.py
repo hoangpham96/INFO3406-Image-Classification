@@ -69,13 +69,12 @@ class NearestNeighbor:
 		#loop over all test rows
 		for i in range(num_test):
 		# find the nearest training image to the ith test image
-		#using the L1 distance (sum of absoulte value differences)
-			# distances = np.sum(np.abs(self.Xtr - X[i,:]), axis = 1)
 			min_index = np.argmin(distance(self.Xtr, X[i,:])) #get the index with smallest distance
 			Ypred[i] = self.ytr[min_index] #predict the label of the nearest example
 			
 		return Ypred
 
+""" Begin testing """
 time_start = datetime.now()
 
 NN = NearestNeighbor();
@@ -89,6 +88,8 @@ for i in range(1000):
 print(count)
 
 time_finished = datetime.now()
+
+""" Finish testing """
 
 duration = time_finished - time_start
 print(duration)
