@@ -40,8 +40,7 @@ test_data = test['data']
 
 def distance(img1,img2):
 	#Using Euclidean distance. TODO: find other more effective measures.
-	distance = (img1.astype("float")-img2.astype("float"))**2
-	distance = np.sqrt(sum(distance))
+	distance = np.sqrt(np.sum((img1-img2)**2, axis = 1))
 	return distance
 
 def rgb2gray(img):
@@ -71,8 +70,8 @@ class NearestNeighbor:
 		for i in range(num_test):
 		# find the nearest training image to the ith test image
 		#using the L1 distance (sum of absoulte value differences)
-			distances = np.sum(np.abs(self.Xtr - X[i,:]), axis = 1)
-			min_index = np.argmin(distances) #get the index with smallest distance
+			# distances = np.sum(np.abs(self.Xtr - X[i,:]), axis = 1)
+			min_index = np.argmin(distance(self.Xtr, X[i,:])) #get the index with smallest distance
 			Ypred[i] = self.ytr[min_index] #predict the label of the nearest example
 			
 		return Ypred
@@ -80,11 +79,11 @@ class NearestNeighbor:
 time_start = datetime.now()
 
 NN = NearestNeighbor();
-NN.train(training_data[0][0:100],training_lables[0][0:100])
-result = NN.predict(test_data[0:100])
+NN.train(training_data[0][0:1000],training_lables[0][0:1000])
+result = NN.predict(test_data[0:1000])
 
 count = 0
-for i in range(100):
+for i in range(1000):
 	 if result[i] == test_label[i]:
 	 	count += 1
 print(count)
