@@ -125,7 +125,7 @@ class kNearestNeighbor:
 
 pylab.figure()
 pylab.gray()
-pylab.imshow(rgb2gray(rotate(training_data[0][100],1)).reshape(32,32))
+pylab.imshow(rgb2gray(rotate(training_data[0][100],3)).reshape(32,32))
 
 pylab.figure()
 pylab.gray()

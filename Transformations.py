@@ -31,13 +31,20 @@ def rgb2gray(img):
 
 #Rotate an array of 3*n*n values 90 degrees k times
 def rotate(img, k):
-	img_p = pixelize(img)
-	result = np.zeros(img_p.shape)
+	if k == 1:
+		img_p = pixelize(img)
+		result = np.zeros(img_p.shape)
 
-	n = int(np.sqrt(len(img_p)))
+		n = int(np.sqrt(len(img_p)))
 
-	for i in range(n):
-		for j in range(n):
-			result[i*n+j] = img_p[(n-j-1)*n+i]
+		for i in range(n):
+			for j in range(n):
+				result[i*n+j] = img_p[(n-j-1)*n+i]
 
-	return depixelize(result)
+		result = depixelize(result)
+	else:
+		result = img
+		for i in range(k):
+			result = rotate(result, 1)
+
+	return result
