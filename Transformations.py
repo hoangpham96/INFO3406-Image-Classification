@@ -39,6 +39,8 @@ def rotate(img, k):
 
 		for i in range(n):
 			for j in range(n):
+				""" In a regular matrix in form of [i,j], the formula is result[i,j] = img_p[(n-j-1),i]
+					But since this is a matrix flattened to an array, the below formula is used"""
 				result[i*n+j] = img_p[(n-j-1)*n+i]
 
 		result = depixelize(result)
@@ -46,5 +48,28 @@ def rotate(img, k):
 		result = img
 		for i in range(k):
 			result = rotate(result, 1)
+
+	return result
+
+#Mirror an image horizontally/vertically
+#"Vertically" is a boolean. If true, flip vertically, else flip horizontally
+def mirror(img, vertically):
+	img_p = pixelize(img)
+	result = np.zeros(img_p.shape)
+
+	n = int(np.sqrt(len(img_p)))
+
+	for i in range(n):
+		for j in range(n):
+			if vertically:
+				""" In a regular matrix in form of [i,j], the formula is result[i,j] = img_p[(n-i-1),j]
+					But since this is a matrix flattened to an array, the below formula is used"""
+				result[i*n+j] = img_p[(n-i-1)*n+j]
+			else:
+				""" In a regular matrix in form of [i,j], the formula is result[i,j] = img_p[(n-i-1),j]
+				But since this is a matrix flattened to an array, the below formula is used"""
+				result[i*n+j] = img_p[i*n+(n-j-1)]
+
+	result = depixelize(result)
 
 	return result
