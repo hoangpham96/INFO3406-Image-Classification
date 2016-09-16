@@ -52,20 +52,21 @@ class kNearestNeighbor:
 	def train(self, X,y):
 		"""input	X -> training set features
 					y -> labels of training sets"""
-		""" X is N x D where each row is an example. Y is 1- dimension of size N """
+		""" X is N x D where each row is a training image. Y is 1-dimension of size N """
 		# the nearest neighbor classifier simply remembers all the training data
 		self.Xtr = X
 		self.ytr = np.array(y)
 	
 	def predict(self, X, k):
-		""" X is N x D where each row is an example we wish to predict label for """
+		""" X is N x D where each row is a test image we wish to predict label for """
 		num_test = X.shape[0]
 		Ypred = np.zeros(num_test, dtype=self.ytr.dtype)
 		
 		#loop over all test rows
 		for i in range(num_test):
-		# find the nearest training image to the ith test image
+		# find the k nearest training images to the ith test image
 			dist = distance(self.Xtr, X[i,:])
+
 			closest_neighbors = dist.argsort()[:k]
 			closest_neighbors_lable = []
 			for neighbor in closest_neighbors:
@@ -76,33 +77,33 @@ class kNearestNeighbor:
 			
 		return Ypred
 
-# """ Begin testing """
-# time_start = datetime.now()
 
-# kNN = kNearestNeighbor();
-# kNN.train(training_data[0][0:1000],training_lables[0][0:1000])
-# result = kNN.predict(test_data[0:1000], 100)
+""" Test accuracy and measure time taken"""
+""" Begin testing """
+time_start = datetime.now()
 
-# count = 0
-# for i in range(1000):
-# 	 if result[i] == test_label[i]:
-# 	 	count += 1
-# print(count)
+datasize = 1000
 
-# time_finished = datetime.now()
+kNN = kNearestNeighbor();
+kNN.train(training_data[0][0:datasize],training_lables[0][0:datasize])
+result = kNN.predict(test_data[0:datasize], 100)
 
-# """ Finish testing """
+count = 0
+for i in range(datasize):
+	 if result[i] == test_label[i]:
+	 	count += 1
+print("Accuracy = " + str(count*100/datasize) + "%")
 
-# duration = time_finished - time_start
-# print(duration)
+time_finished = datetime.now()
+
+""" Finish testing """
+
+duration = time_finished - time_start
+print("Time = "+ str(duration))
 
 
 
 
-
-
-# #Below is a series of test
-# #
 # #Red channel of a picture with lable 1
 # similar_pictures = []
 # for i in range(0,len(training_data[0])):
@@ -117,22 +118,19 @@ class kNearestNeighbor:
 # 		pic_red_channel = training_data[0][i][0:1024]
 # 		similar_pictures2.append(pic_red_channel)
 
-
-
 # # print(distance(similar_pictures[0],similar_pictures[10]))
 
-# print(training_lables[0][0])
 
-pylab.figure()
-pylab.gray()
-pylab.imshow(rgb2gray(mirror(training_data[0][100],False)).reshape(32,32))
 
-pylab.figure()
-pylab.gray()
-pylab.imshow(rgb2gray(training_data[0][100]).reshape(32,32))
+
+# """ Test functions by visualizing the images"""
+# pylab.figure()
+# pylab.gray()
+# pylab.imshow(rgb2gray(mirror(training_data[0][100],False)).reshape(32,32))
 
 # pylab.figure()
 # pylab.gray()
-# pylab.imshow(rgb2gray(training_data[0][0]).reshape(32,32))
-pylab.show()
+# pylab.imshow(rgb2gray(training_data[0][100]).reshape(32,32))
+
+# pylab.show()
 
