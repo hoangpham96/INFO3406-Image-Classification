@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib as pl
 import pickle
+import pylab
+from Transformations import *
 from datetime import datetime
 from scipy.stats import mode
 
@@ -43,12 +45,6 @@ def distance(img1,img2):
 	distance = np.sqrt(np.sum((img1-img2)**2, axis = 1))
 	return distance
 
-def rgb2gray(img):
-	r, g, b = img[0:1024], img[1024:2048], img[2048:3072]
-	gray = 0.2989 * r.astype("float") + 0.5870 * g.astype("float") + 0.1140 * b.astype("float")				#Formula to turn rgb to grayscale
-	return gray
-
-
 class kNearestNeighbor:
 	def _init_(self):
 		pass
@@ -80,25 +76,30 @@ class kNearestNeighbor:
 			
 		return Ypred
 
-""" Begin testing """
-time_start = datetime.now()
+# """ Begin testing """
+# time_start = datetime.now()
 
-kNN = kNearestNeighbor();
-kNN.train(training_data[0][0:1000],training_lables[0][0:1000])
-result = kNN.predict(test_data[0:1000], 100)
+# kNN = kNearestNeighbor();
+# kNN.train(training_data[0][0:1000],training_lables[0][0:1000])
+# result = kNN.predict(test_data[0:1000], 100)
 
-count = 0
-for i in range(1000):
-	 if result[i] == test_label[i]:
-	 	count += 1
-print(count)
+# count = 0
+# for i in range(1000):
+# 	 if result[i] == test_label[i]:
+# 	 	count += 1
+# print(count)
 
-time_finished = datetime.now()
+# time_finished = datetime.now()
 
-""" Finish testing """
+# """ Finish testing """
 
-duration = time_finished - time_start
-print(duration)
+# duration = time_finished - time_start
+# print(duration)
+
+
+
+
+
 
 # #Below is a series of test
 # #
@@ -122,13 +123,16 @@ print(duration)
 
 # print(training_lables[0][0])
 
-# pylab.figure()
-# pylab.gray()
-# pylab.imshow(similar_pictures2[0].reshape(32,32))
+pylab.figure()
+pylab.gray()
+pylab.imshow(rgb2gray(rotate(training_data[0][100],1)).reshape(32,32))
 
+pylab.figure()
+pylab.gray()
+pylab.imshow(rgb2gray(training_data[0][100]).reshape(32,32))
 
 # pylab.figure()
 # pylab.gray()
 # pylab.imshow(rgb2gray(training_data[0][0]).reshape(32,32))
+pylab.show()
 
-# pylab.show()
