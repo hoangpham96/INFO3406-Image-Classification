@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib as pl
 import pickle
-import pylab
 from datetime import datetime
+from scipy.stats import mode
 
 #Unpickling a file and returning its content
 def unpickle(file):
@@ -49,7 +49,7 @@ def rgb2gray(img):
 	return gray
 
 
-class NearestNeighbor:
+class kNearestNeighbor:
 	def _init_(self):
 		pass
 	
@@ -61,7 +61,7 @@ class NearestNeighbor:
 		self.Xtr = X
 		self.ytr = np.array(y)
 	
-	def predict(self, X):
+	def predict(self, X, k):
 		""" X is N x D where each row is an example we wish to predict label for """
 		num_test = X.shape[0]
 		Ypred = np.zeros(num_test, dtype=self.ytr.dtype)
@@ -69,17 +69,23 @@ class NearestNeighbor:
 		#loop over all test rows
 		for i in range(num_test):
 		# find the nearest training image to the ith test image
-			min_index = np.argmin(distance(self.Xtr, X[i,:])) #get the index with smallest distance
-			Ypred[i] = self.ytr[min_index] #predict the label of the nearest example
+			dist = distance(self.Xtr, X[i,:])
+			closest_neighbors = dist.argsort()[:k]
+			closest_neighbors_lable = []
+			for neighbor in closest_neighbors:
+				closest_neighbors_lable.append(self.ytr[neighbor])
+
+			# min_index = np.argmin(distance(self.Xtr, X[i,:])) #get the index with smallest distance
+			Ypred[i] = mode(closest_neighbors_lable).mode[0] #predict the label of the nearest example
 			
 		return Ypred
 
 """ Begin testing """
 time_start = datetime.now()
 
-NN = NearestNeighbor();
-NN.train(training_data[0][0:1000],training_lables[0][0:1000])
-result = NN.predict(test_data[0:1000])
+kNN = kNearestNeighbor();
+kNN.train(training_data[0][0:1000],training_lables[0][0:1000])
+result = kNN.predict(test_data[0:1000], 100)
 
 count = 0
 for i in range(1000):
