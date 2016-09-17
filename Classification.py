@@ -86,28 +86,7 @@ class kNearestNeighbor:
 			num = np.zeros(10)
 
 			for j in range(k):
-				if closest_neighbors_lable[j] == 0:
-					num[0] += 1/(dist[closest_neighbors[j]]**2)
-				elif closest_neighbors_lable[j] == 1:
-					num[1] += 1/(dist[closest_neighbors[j]]**2)
-				elif closest_neighbors_lable[j] == 2:
-					num[2] += 1/(dist[closest_neighbors[j]]**2)
-				elif closest_neighbors_lable[j] == 3:
-					num[3] += 1/(dist[closest_neighbors[j]]**2)
-				elif closest_neighbors_lable[j] == 4:
-					num[4] += 1/(dist[closest_neighbors[j]]**2)
-				elif closest_neighbors_lable[j] == 5:
-					num[5] += 1/(dist[closest_neighbors[j]]**2)
-				elif closest_neighbors_lable[j] == 6:
-					num[6] += 1/(dist[closest_neighbors[j]]**2)
-				elif closest_neighbors_lable[j] == 7:
-					num[7] += 1/(dist[closest_neighbors[j]]**2)
-				elif closest_neighbors_lable[j] == 8:
-					num[8] += 1/(dist[closest_neighbors[j]]**2)
-				elif closest_neighbors_lable[j] == 9:
-					num[9] += 1/(dist[closest_neighbors[j]]**2)
-
-
+				num[closest_neighbors_lable[j]] += 1/(dist[closest_neighbors[j]]**2)
 
 			# min_index = np.argmin(distance(self.Xtr, X[i,:])) #get the index with smallest distance
 			# Ypred[i] = mode(closest_neighbors_lable).mode[0] #predict the label of the nearest example
