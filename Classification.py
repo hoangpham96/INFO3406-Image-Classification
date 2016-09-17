@@ -98,40 +98,37 @@ class kNearestNeighbor:
 
 """ Test accuracy and measure time taken"""
 """ Begin testing """
-time_start = datetime.now()
-
 datasize = 1000
+k = 100
 
-a = []
-b = []
-for i in range(datasize):
-	a.append( normalise(training_data[0][i]))
-	b.append( normalise(test_data[i]))
-a = np.array(a)
-b = np.array(b)
+for batch_num in range(5):
+	time_start = datetime.now()
+
+	a = []
+	b = []
+	for i in range(datasize):
+		a.append( normalise(training_data[batch_num][i]))
+		b.append( normalise(test_data[i]))
+	a = np.array(a)
+	b = np.array(b)
 
 
-kNN = kNearestNeighbor();
-kNN.train(a,training_lables[0][0:datasize])
-result = kNN.predict(b, 100)
+	kNN = kNearestNeighbor();
+	kNN.train(a,training_lables[batch_num][0:datasize])
+	result = kNN.predict(b, k)
 
-with open('output/output.csv', 'wb') as csvfile:
-    writer = csv.writer(csvfile, delimiter=' ',
-                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(result)
+	with open('output/output{}.csv'.format(batch_num+1), 'wb') as csvfile:
+	    writer = csv.writer(csvfile, delimiter=' ',
+	                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	    writer.writerow(result)
 
-count = 0
-for i in range(datasize):
-	 if result[i] == test_label[i]:
-	 	count += 1
-print("Accuracy = " + str(count*100/datasize) + "%")
+	print("Batch {} done!".format(batch_num+1))
 
-time_finished = datetime.now()
+	""" Finish testing """
+	time_finished = datetime.now()
+	duration = time_finished - time_start
+	print("Time = "+ str(duration))
 
-""" Finish testing """
-
-duration = time_finished - time_start
-print("Time = "+ str(duration))
 
 
 
