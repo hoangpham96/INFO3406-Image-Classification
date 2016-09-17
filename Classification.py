@@ -5,6 +5,7 @@ import pylab
 from Transformations import *
 from datetime import datetime
 from scipy.stats import mode
+import csv
 
 #Unpickling a file and returning its content
 def unpickle(file):
@@ -114,6 +115,11 @@ kNN = kNearestNeighbor();
 kNN.train(a,training_lables[0][0:datasize])
 result = kNN.predict(b, 100)
 
+with open('output/output.csv', 'wb') as csvfile:
+    writer = csv.writer(csvfile, delimiter=' ',
+                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    writer.writerow(result)
+
 count = 0
 for i in range(datasize):
 	 if result[i] == test_label[i]:
@@ -135,14 +141,14 @@ print("Time = "+ str(duration))
 # 	if training_lables[0][i] == 1:
 # 		pic_red_channel = training_data[0][i][0:1024]
 # 		similar_pictures.append(pic_red_channel)
-
+#
 # #Red channel of a picture with different lable
 # similar_pictures2 = []
 # for i in range(0,len(training_data[0])):
 # 	if training_lables[0][i] == 6:
 # 		pic_red_channel = training_data[0][i][0:1024]
 # 		similar_pictures2.append(pic_red_channel)
-
+#
 # # print(distance(similar_pictures[0],similar_pictures[10]))
 
 
