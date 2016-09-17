@@ -3,3 +3,4 @@ data2/
 output/
 output2/
 __pycache__/
+*.pyc

@@ -48,10 +48,18 @@ def distance(img1,img2):
 	distance = np.sqrt(np.sum((img1-img2)**2, axis = 1))
 	return distance
 
+def normalise(z, new_min=1.0, new_max=2.0):
+	#function definition
+	z_min = np.min(z)
+	z_max = np.max(z)
+
+	z_normalized = new_min + (z - z_min)*(new_max - new_min)/(z_max - z_min)
+	return z_normalized
+
 class kNearestNeighbor:
 	def _init_(self):
 		pass
-	
+
 	def train(self, X,y):
 		"""input	X -> training set features
 					y -> labels of training sets"""
@@ -59,12 +67,12 @@ class kNearestNeighbor:
 		# the nearest neighbor classifier simply remembers all the training data
 		self.Xtr = X
 		self.ytr = np.array(y)
-	
+
 	def predict(self, X, k):
 		""" X is N x D where each row is a test image we wish to predict label for """
 		num_test = X.shape[0]
 		Ypred = np.zeros(num_test, dtype=self.ytr.dtype)
-		
+
 		#loop over all test rows
 		for i in range(num_test):
 		# find the k nearest training images to the ith test image
@@ -75,9 +83,36 @@ class kNearestNeighbor:
 			for neighbor in closest_neighbors:
 				closest_neighbors_lable.append(self.ytr[neighbor])
 
+			num = np.zeros(10)
+
+			for j in range(k):
+				if closest_neighbors_lable[j] == 0:
+					num[0] += 1/(dist[closest_neighbors[j]]**2)
+				elif closest_neighbors_lable[j] == 1:
+					num[1] += 1/(dist[closest_neighbors[j]]**2)
+				elif closest_neighbors_lable[j] == 2:
+					num[2] += 1/(dist[closest_neighbors[j]]**2)
+				elif closest_neighbors_lable[j] == 3:
+					num[3] += 1/(dist[closest_neighbors[j]]**2)
+				elif closest_neighbors_lable[j] == 4:
+					num[4] += 1/(dist[closest_neighbors[j]]**2)
+				elif closest_neighbors_lable[j] == 5:
+					num[5] += 1/(dist[closest_neighbors[j]]**2)
+				elif closest_neighbors_lable[j] == 6:
+					num[6] += 1/(dist[closest_neighbors[j]]**2)
+				elif closest_neighbors_lable[j] == 7:
+					num[7] += 1/(dist[closest_neighbors[j]]**2)
+				elif closest_neighbors_lable[j] == 8:
+					num[8] += 1/(dist[closest_neighbors[j]]**2)
+				elif closest_neighbors_lable[j] == 9:
+					num[9] += 1/(dist[closest_neighbors[j]]**2)
+
+
+
 			# min_index = np.argmin(distance(self.Xtr, X[i,:])) #get the index with smallest distance
-			Ypred[i] = mode(closest_neighbors_lable).mode[0] #predict the label of the nearest example
-			
+			# Ypred[i] = mode(closest_neighbors_lable).mode[0] #predict the label of the nearest example
+			Ypred[i] = num.argmax()
+
 		return Ypred
 
 
@@ -87,9 +122,18 @@ time_start = datetime.now()
 
 datasize = 1000
 
+a = []
+b = []
+for i in range(datasize):
+	a.append( normalise(training_data[0][i]))
+	b.append( normalise(test_data[i]))
+a = np.array(a)
+b = np.array(b)
+
+
 kNN = kNearestNeighbor();
-kNN.train(training_data[0][0:datasize],training_lables[0][0:datasize])
-result = kNN.predict(test_data[0:datasize], 100)
+kNN.train(a,training_lables[0][0:datasize])
+result = kNN.predict(b, 100)
 
 count = 0
 for i in range(datasize):
@@ -106,7 +150,6 @@ print("Time = "+ str(duration))
 
 
 
-
 # #Red channel of a picture with lable 1
 # similar_pictures = []
 # for i in range(0,len(training_data[0])):
@@ -114,7 +157,7 @@ print("Time = "+ str(duration))
 # 		pic_red_channel = training_data[0][i][0:1024]
 # 		similar_pictures.append(pic_red_channel)
 
-# #Red channel of a picture with different lable 
+# #Red channel of a picture with different lable
 # similar_pictures2 = []
 # for i in range(0,len(training_data[0])):
 # 	if training_lables[0][i] == 6:
@@ -136,4 +179,3 @@ print("Time = "+ str(duration))
 # pylab.imshow(rgb2gray(training_data[0][100]).reshape(32,32))
 
 # pylab.show()
-
