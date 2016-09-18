@@ -48,8 +48,8 @@ def distance(img1,img2):
 	distance = np.sum((img1-img2)**2, axis = 1)
 	return distance
 
-def normalise(z, new_min=1.0, new_max=2.0):
-	#function definition
+#TODO: find the reason why using 0-1000000 is better than 1.0 - 2.0
+def normalise(z, new_min=0, new_max=1000000):
 	z_min = np.min(z)
 	z_max = np.max(z)
 
