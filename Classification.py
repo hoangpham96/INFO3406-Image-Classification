@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib as pl
 import pickle
 import pylab
 from Transformations import *
@@ -46,7 +45,7 @@ test_data = test['data']
 
 def distance(img1,img2):
 	#Using Euclidean distance. TODO: find other more effective measures.
-	distance = np.sqrt(np.sum((img1-img2)**2, axis = 1))
+	distance = np.sum((img1-img2)**2, axis = 1)
 	return distance
 
 def normalise(z, new_min=1.0, new_max=2.0):
@@ -128,27 +127,6 @@ for batch_num in range(5):
 	time_finished = datetime.now()
 	duration = time_finished - time_start
 	print("Time = "+ str(duration))
-
-
-
-
-# #Red channel of a picture with lable 1
-# similar_pictures = []
-# for i in range(0,len(training_data[0])):
-# 	if training_lables[0][i] == 1:
-# 		pic_red_channel = training_data[0][i][0:1024]
-# 		similar_pictures.append(pic_red_channel)
-#
-# #Red channel of a picture with different lable
-# similar_pictures2 = []
-# for i in range(0,len(training_data[0])):
-# 	if training_lables[0][i] == 6:
-# 		pic_red_channel = training_data[0][i][0:1024]
-# 		similar_pictures2.append(pic_red_channel)
-#
-# # print(distance(similar_pictures[0],similar_pictures[10]))
-
-
 
 
 # """ Test functions by visualizing the images"""
