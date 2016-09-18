@@ -43,12 +43,19 @@ test = unpickle(test_file)
 test_label = test['labels']
 test_data = test['data']
 
+""" Calculate the distance between the two images
+	Can calculate between matrix v. matrix and matrix vs. vector
+	Params: the two images img1 and img2
+	Return: the distance between two images"""
 def distance(img1,img2):
-	#Using Euclidean distance. TODO: find other more effective measures.
+	#Using Squared Euclidean distance. TODO: find other more effective measures.
 	distance = np.sum((img1-img2)**2, axis = 1)
 	return distance
 
-#TODO: find the reason why using 0-1000000 is better than 1.0 - 2.0
+""" Normalise the data for better comparison between images
+	Params: data z, new_min, new_max
+	Return: z normalised"""
+#TODO: find the reason why using 0-1000000 is better than 0.0 - 1.0
 def normalise(z, new_min=0, new_max=1000000):
 	z_min = np.min(z)
 	z_max = np.max(z)
@@ -60,16 +67,20 @@ class kNearestNeighbor:
 	def _init_(self):
 		pass
 
+
+	""" Receive training data
+		Params: X, a NxD matrix where each row is a training image. N is the data size and D is the image size.
+				y, a 1-D array of size N."""
 	def train(self, X,y):
-		"""input	X -> training set features
-					y -> labels of training sets"""
-		""" X is N x D where each row is a training image. Y is 1-dimension of size N """
-		# the nearest neighbor classifier simply remembers all the training data
 		self.Xtr = X
 		self.ytr = np.array(y)
 
-	def predict(self, X, k):
-		""" X is N x D where each row is a test image we wish to predict label for """
+
+	""" Predict the lable for the test image
+		Params: X, NxD where each row is a test image. N is the data size.
+				k, the number of neighbors to consider.
+		Return: the lable for each test image"""
+	def predict(self, X, k=100):
 		num_test = X.shape[0]
 		Ypred = np.zeros(num_test, dtype=self.ytr.dtype)
 
@@ -83,13 +94,13 @@ class kNearestNeighbor:
 			for neighbor in closest_neighbors:
 				closest_neighbors_lable.append(self.ytr[neighbor])
 
+			#count for each lable
 			num = np.zeros(10)
 
+			#for each neighbor, their lable has a weight of 1/distance^2
 			for j in range(k):
 				num[closest_neighbors_lable[j]] += 1/(dist[closest_neighbors[j]]**2)
 
-			# min_index = np.argmin(distance(self.Xtr, X[i,:])) #get the index with smallest distance
-			# Ypred[i] = mode(closest_neighbors_lable).mode[0] #predict the label of the nearest example
 			Ypred[i] = num.argmax()
 
 		return Ypred
@@ -98,28 +109,25 @@ class kNearestNeighbor:
 """ Test accuracy and measure time taken"""
 """ Begin testing """
 datasize = 1000
-k = 100
+
+result = []
 
 for batch_num in range(5):
 	time_start = datetime.now()
 
-	a = []
-	b = []
+	#Normalising both training data and test data
+	normalised_training_data = []
+	normalised_test_data = []
 	for i in range(datasize):
-		a.append( normalise(training_data[batch_num][i]))
-		b.append( normalise(test_data[i]))
-	a = np.array(a)
-	b = np.array(b)
+		normalised_training_data.append( normalise(training_data[batch_num][i]) )
+		normalised_test_data.append( normalise(test_data[i]) )
+	normalised_training_data = np.array(normalised_training_data)
+	normalised_test_data = np.array( normalised_test_data )
 
-
+	#Classifying using nearest neighbor
 	kNN = kNearestNeighbor();
-	kNN.train(a,training_lables[batch_num][0:datasize])
-	result = kNN.predict(b, k)
-
-	with open('output/output{}.csv'.format(batch_num+1), 'wb') as csvfile:
-	    writer = csv.writer(csvfile, delimiter=' ',
-	                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
-	    writer.writerow(result)
+	kNN.train(normalised_training_data,training_lables[batch_num][0:datasize])
+	result.append( kNN.predict(normalised_test_data) )
 
 	print("Batch {} done!".format(batch_num+1))
 
@@ -129,7 +137,22 @@ for batch_num in range(5):
 	print("Time = "+ str(duration))
 
 
-# """ Test functions by visualizing the images"""
+""" Find the best result.
+	The lable with the most number of predictions is the best result"""
+result_matrix = np.matrix(result).T
+best_result = np.zeros(result_matrix.shape[0])
+for i in range(result_matrix.shape[0]):
+    best_est = np.squeeze(np.asarray(result_matrix[i]))
+    best_result[i] = int(mode(best_est).mode[0])
+
+#Write to file
+with open('output/output.csv', 'wb') as csvfile:
+    writer = csv.writer(csvfile, delimiter=' ',
+                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    writer.writerow(best_result)
+
+
+# """ Test transformation functions by visualizing the images"""
 # pylab.figure()
 # pylab.gray()
 # pylab.imshow(rgb2gray(mirror(training_data[0][100],False)).reshape(32,32))

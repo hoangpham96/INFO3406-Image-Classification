@@ -17,36 +17,19 @@ def unpickle(file):
 	fo.close()
 	return dict
 
-
 result = []
 
-
-for batch_num in range(5):
-    with open('output/output{}.csv'.format(batch_num+1), 'rb') as csvfile:
-        reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-        result.append( map(int,reader.next()) )
-
+#Read result
+with open('output/output.csv', 'rb') as csvfile:
+    reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+    result = map(float,reader.next())
 
 test = unpickle('data/test_batch')
 test_label = test['labels']
 
-result_matrix = np.matrix(result).T
-best = np.zeros(result_matrix.shape[0])
-for i in range(result_matrix.shape[0]):
-    best_ests = np.squeeze(np.asarray(result_matrix[i]))
-    best[i] = mode(best_ests).mode[0]
-
-
-for i in range(5):
-    count = 0.0
-    for j in range(datasize):
-        if result[i][j] == test_label[j]:
-            count += 1
-    print("Accuracy = {}%".format(count*100/datasize))
-
-print('---------------')
+#Calculate the accuracy of the predictions comparing to the lable of the test image
 count = 0.0
 for j in range(datasize):
-    if best[j] == test_label[j]:
+    if result[j] == test_label[j]:
         count += 1
 print("Accuracy = {}%".format(count*100/datasize))
