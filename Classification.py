@@ -1,10 +1,12 @@
 import numpy as np
 import pickle
-import pylab
 from Transformations import *
 from datetime import datetime
 from scipy.stats import mode
 import csv
+
+datasize = 1000
+
 
 #Unpickling a file and returning its content
 def unpickle(file):
@@ -105,51 +107,50 @@ class kNearestNeighbor:
 
 		return Ypred
 
+if __name__ == "__main__":
+	""" Test accuracy and measure time taken"""
+	""" Begin testing """
 
-""" Test accuracy and measure time taken"""
-""" Begin testing """
-datasize = 1000
+	result = []
 
-result = []
+	for batch_num in range(5):
+		time_start = datetime.now()
 
-for batch_num in range(5):
-	time_start = datetime.now()
+		#Normalising both training data and test data
+		normalised_training_data = []
+		normalised_test_data = []
+		for i in range(datasize):
+			normalised_training_data.append( normalise(training_data[batch_num][i]) )
+			normalised_test_data.append( normalise(test_data[i]) )
+		normalised_training_data = np.array(normalised_training_data)
+		normalised_test_data = np.array( normalised_test_data )
 
-	#Normalising both training data and test data
-	normalised_training_data = []
-	normalised_test_data = []
-	for i in range(datasize):
-		normalised_training_data.append( normalise(training_data[batch_num][i]) )
-		normalised_test_data.append( normalise(test_data[i]) )
-	normalised_training_data = np.array(normalised_training_data)
-	normalised_test_data = np.array( normalised_test_data )
+		#Classifying using nearest neighbor
+		kNN = kNearestNeighbor();
+		kNN.train(normalised_training_data,training_lables[batch_num][0:datasize])
+		result.append( kNN.predict(normalised_test_data) )
 
-	#Classifying using nearest neighbor
-	kNN = kNearestNeighbor();
-	kNN.train(normalised_training_data,training_lables[batch_num][0:datasize])
-	result.append( kNN.predict(normalised_test_data) )
+		print("Batch {} done!".format(batch_num+1))
 
-	print("Batch {} done!".format(batch_num+1))
-
-	""" Finish testing """
-	time_finished = datetime.now()
-	duration = time_finished - time_start
-	print("Time = "+ str(duration))
+		""" Finish testing """
+		time_finished = datetime.now()
+		duration = time_finished - time_start
+		print("Time = "+ str(duration))
 
 
-""" Find the best result.
-	The lable with the most number of predictions is the best result"""
-result_matrix = np.matrix(result).T
-best_result = np.zeros(result_matrix.shape[0])
-for i in range(result_matrix.shape[0]):
-    best_est = np.squeeze(np.asarray(result_matrix[i]))
-    best_result[i] = int(mode(best_est).mode[0])
+	""" Find the best result.
+		The lable with the most number of predictions is the best result"""
+	result_matrix = np.matrix(result).T
+	best_result = np.zeros(result_matrix.shape[0])
+	for i in range(result_matrix.shape[0]):
+	    best_est = np.squeeze(np.asarray(result_matrix[i]))
+	    best_result[i] = int(mode(best_est).mode[0])
 
-#Write to file
-with open('output/output.csv', 'wb') as csvfile:
-    writer = csv.writer(csvfile, delimiter=' ',
-                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(best_result)
+	#Write to file
+	with open('output/output.csv', 'w') as csvfile:
+	    writer = csv.writer(csvfile, delimiter=' ',
+	                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	    writer.writerow(best_result)
 
 
 # """ Test transformation functions by visualizing the images"""

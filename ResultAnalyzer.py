@@ -1,8 +1,7 @@
 import csv
 import numpy as np
 from scipy.stats import mode
-
-datasize = 1000
+from Classification import datasize
 
 def unpickle(file):
 	try:
@@ -20,9 +19,12 @@ def unpickle(file):
 result = []
 
 #Read result
-with open('output/output.csv', 'rb') as csvfile:
-    reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-    result = map(float,reader.next())
+with open('output/output.csv', 'r') as csvfile:
+	reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+	try:
+		result = list(map(float,reader.__next__()))
+	except:
+		result = map(float,reader.next())
 
 test = unpickle('data/test_batch')
 test_label = test['labels']
