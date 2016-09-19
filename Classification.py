@@ -22,29 +22,6 @@ def unpickle(file):
 	fo.close()
 	return dict
 
-#Define file paths
-meta_file = 'data/batches.meta'
-training_files = ['data/data_batch_1','data/data_batch_2','data/data_batch_3','data/data_batch_4','data/data_batch_5']
-test_file = 'data/test_batch'
-
-#Obtaining label names
-meta = unpickle(meta_file)
-label_names = meta['label_names']
-
-#Obtaining training data and lables
-training_data = []					#Array of 5 training batches, each batches contain 1000 img
-training_lables = []
-
-for f in training_files:
-	batch = unpickle(f)
-	training_data.append(batch['data'])
-	training_lables.append(batch['labels'])
-
-#Obtaining test data
-test = unpickle(test_file)
-test_label = test['labels']
-test_data = test['data']
-
 """ Calculate the distance between the two images
 	Can calculate between matrix v. matrix and matrix vs. vector
 	Params: the two images img1 and img2
@@ -78,11 +55,11 @@ class kNearestNeighbor:
 		self.ytr = np.array(y)
 
 
-	""" Predict the lable for the test image
+	""" Predict the label for the test image
 		Params: X, NxD where each row is a test image. N is the data size.
 				k, the number of neighbors to consider.
-		Return: the lable for each test image"""
-	def predict(self, X, k=100):
+		Return: the label for each test image"""
+	def predict(self, X, num_class, k=100):
 		num_test = X.shape[0]
 		Ypred = np.zeros(num_test, dtype=self.ytr.dtype)
 
@@ -92,24 +69,48 @@ class kNearestNeighbor:
 			dist = distance(self.Xtr, X[i,:])
 
 			closest_neighbors = dist.argsort()[:k]
-			closest_neighbors_lable = []
+			closest_neighbors_label = []
 			for neighbor in closest_neighbors:
-				closest_neighbors_lable.append(self.ytr[neighbor])
+				closest_neighbors_label.append(self.ytr[neighbor])
 
-			#count for each lable
-			num = np.zeros(10)
+			#count for each label
+			num = np.zeros(num_class)
 
-			#for each neighbor, their lable has a weight of 1/distance^2
+			#for each neighbor, their label has a weight of 1/distance^2
 			for j in range(k):
-				num[closest_neighbors_lable[j]] += 1/(dist[closest_neighbors[j]]**2)
+				num[closest_neighbors_label[j]] += 1/(dist[closest_neighbors[j]]**2)
 
 			Ypred[i] = num.argmax()
 
 		return Ypred
 
 if __name__ == "__main__":
-	""" Test accuracy and measure time taken"""
-	""" Begin testing """
+	#Define file paths
+	meta_file = 'data/batches.meta'
+	training_files = ['data/data_batch_1','data/data_batch_2','data/data_batch_3','data/data_batch_4','data/data_batch_5']
+	test_file = 'data/test_batch'
+
+	#Obtaining label names
+	meta = unpickle(meta_file)
+	label_names = meta['label_names']
+	num_class = len(label_names)
+
+	#Obtaining training data and labels
+	training_data = []					#Array of 5 training batches, each batches contain 1000 img
+	training_labels = []
+
+	for f in training_files:
+		batch = unpickle(f)
+		training_data.append(batch['data'])
+		training_labels.append(batch['labels'])
+
+	#Obtaining test data
+	test = unpickle(test_file)
+	test_label = test['labels']
+	test_data = test['data']
+
+	""" Run prediction and measure time taken"""
+	""" Begin """
 
 	result = []
 
@@ -125,21 +126,23 @@ if __name__ == "__main__":
 		normalised_training_data = np.array(normalised_training_data)
 		normalised_test_data = np.array( normalised_test_data )
 
+		print("Data in batch {} normalised".format(batch_num+1))
+
 		#Classifying using nearest neighbor
 		kNN = kNearestNeighbor();
-		kNN.train(normalised_training_data,training_lables[batch_num][0:datasize])
-		result.append( kNN.predict(normalised_test_data) )
+		kNN.train(normalised_training_data,training_labels[batch_num][0:datasize])
+		result.append( kNN.predict(normalised_test_data, num_class	) )
 
 		print("Batch {} done!".format(batch_num+1))
 
-		""" Finish testing """
+		""" Finish  """
 		time_finished = datetime.now()
 		duration = time_finished - time_start
 		print("Time = "+ str(duration))
 
 
 	""" Find the best result.
-		The lable with the most number of predictions is the best result"""
+		The label with the most number of predictions is the best result"""
 	result_matrix = np.matrix(result).T
 	best_result = np.zeros(result_matrix.shape[0])
 	for i in range(result_matrix.shape[0]):
@@ -151,15 +154,3 @@ if __name__ == "__main__":
 	    writer = csv.writer(csvfile, delimiter=' ',
 	                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	    writer.writerow(best_result)
-
-
-# """ Test transformation functions by visualizing the images"""
-# pylab.figure()
-# pylab.gray()
-# pylab.imshow(rgb2gray(mirror(training_data[0][100],False)).reshape(32,32))
-
-# pylab.figure()
-# pylab.gray()
-# pylab.imshow(rgb2gray(training_data[0][100]).reshape(32,32))
-
-# pylab.show()
