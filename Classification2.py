@@ -35,8 +35,10 @@ if __name__ == "__main__":
     #Normalising both training data and test data
     normalised_training_data = []
     normalised_test_data = []
+    for i in range(datasize*5):
+	   normalised_training_data.append( normalise(training_data[i]) )
+
     for i in range(datasize):
-    	normalised_training_data.append( normalise(training_data[i]) )
     	normalised_test_data.append( normalise(test_data[i]) )
     normalised_training_data = np.array(normalised_training_data)
     normalised_test_data = np.array( normalised_test_data )
@@ -45,17 +47,18 @@ if __name__ == "__main__":
 
     #Classifying using nearest neighbor
     kNN = kNearestNeighbor();
-    kNN.train(normalised_training_data,training_fine_label[0:datasize])
+    kNN.train(normalised_training_data,training_fine_label[0:datasize*5])
     result = kNN.predict(normalised_test_data, num_class)
 
     print("Fine lable assigned")
 
     #Classifying using nearest neighbor
     kNN2 = kNearestNeighbor();
-    kNN2.train(normalised_training_data,training_coarse_label[0:datasize])
+    kNN2.train(normalised_training_data,training_coarse_label[0:datasize*5])
     result2 =  kNN2.predict(normalised_test_data, num_superclass)
 
     print("Coarse lable assigned")
+
 
     """ Finish  """
     time_finished = datetime.now()
