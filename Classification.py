@@ -5,7 +5,8 @@ from datetime import datetime
 from scipy.stats import mode
 import csv
 
-datasize = 100
+#Number of test data to scale. Full = 10000
+datasize = 1000
 
 
 #Unpickling a file and returning its content
@@ -67,7 +68,7 @@ class kNearestNeighbor:
 		for i in range(num_test):
 		# find the k nearest training images to the ith test image
 			dist = distance(self.Xtr, X[i,:])
-			dist += 1 #prevent divide by zero
+			dist += 0.01 #prevent divide by zero
 
 			closest_neighbors = dist.argsort()[:k]
 			closest_neighbors_label = []
@@ -119,13 +120,8 @@ if __name__ == "__main__":
 		time_start = datetime.now()
 
 		#Normalising both training data and test data
-		normalised_training_data = []
-		normalised_test_data = []
-		for i in range(datasize):
-			normalised_training_data.append( normalise(training_data[batch_num][i]) )
-			normalised_test_data.append( normalise(test_data[i]) )
-		normalised_training_data = np.array(normalised_training_data)
-		normalised_test_data = np.array( normalised_test_data )
+		normalised_training_data = np.apply_along_axis(normalise,1,training_data[batch_num][0:datasize])
+		normalised_test_data = np.apply_along_axis(normalise,1,test_data[0:datasize])
 
 		print("Data in batch {} normalised".format(batch_num+1))
 
