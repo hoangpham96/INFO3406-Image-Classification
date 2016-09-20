@@ -50,7 +50,6 @@ if __name__ == "__main__":
 	print("Recall: {}".format(recall))
 
 
-
 	"""Plotting confusion matrix"""
 	#http://stackoverflow.com/questions/5821125/how-to-plot-confusion-matrix-with-string-axis-rather-than-integer-in-python
 
@@ -89,12 +88,15 @@ if __name__ == "__main__":
 	print("---------------")
 	print()
 
+
+
+
+
 	"""Analyze part 2"""
 	print("Part 2:")
 	print()
 
-	#No plot for part two since there are so many classes
-
+	#Read result
 	meta = unpickle('data2/meta')
 	class_names = meta['fine_label_names']
 	superclass_names = meta['coarse_label_names']
@@ -125,6 +127,11 @@ if __name__ == "__main__":
 	result = [int(i) for i in result]
 	result2 = [int(i) for i in result2]
 
+
+
+
+
+
 	print("Fine labels:")
 	#Calculate the accuracy of the predictions comparing to the lable of the test image
 	count = 0.0
@@ -132,6 +139,7 @@ if __name__ == "__main__":
 	    if result[j] == test_class_label[j]:
 	        count += 1
 	print("Accuracy = {}%".format(count*100/datasize))
+
 
 	#Calculate confusion matrix, precision and recall
 	confusion_matrix = np.zeros((len(class_names),len(class_names)))
@@ -177,6 +185,8 @@ if __name__ == "__main__":
 
 
 
+
+
 	print()
 	print("***")
 	print()
@@ -188,6 +198,7 @@ if __name__ == "__main__":
 	    if result2[j] == test_superclass_label[j]:
 	        count += 1
 	print("Accuracy = {}%".format(count*100/datasize))
+
 
 	#Calculate confusion matrix, precision and recall
 	confusion_matrix = np.zeros((len(superclass_names),len(superclass_names)))
@@ -203,6 +214,8 @@ if __name__ == "__main__":
 	for i in range(len(superclass_names)):
 		recall[i] = confusion_matrix[i][i] / np.sum(confusion_matrix, axis=1)[i]
 	print("Recall: {}".format(recall))
+
+
 
 	"""Plotting confusion matrix"""
 	#http://stackoverflow.com/questions/5821125/how-to-plot-confusion-matrix-with-string-axis-rather-than-integer-in-python
