@@ -125,13 +125,17 @@ if __name__ == "__main__":
 	num_class = len(label_names)
 
 	#Obtaining training data and labels
-	training_data = []					#Array of 5 training batches, each batches contain 1000 img
+	training_data = []			
 	training_labels = []
 
 	for f in training_files:
 		batch = unpickle(f)
-		training_data.append(batch['data'])
-		training_labels.append(batch['labels'])
+		training_data.extend(batch['data'])
+		training_labels.extend(batch['labels'])
+
+	training_data = np.array(training_data)
+	training_labels = np.array(training_labels)
+
 
 	#Obtaining test data
 	test = unpickle(test_file)
@@ -141,46 +145,36 @@ if __name__ == "__main__":
 	""" Run prediction and measure time taken"""
 	""" Begin """
 
-	result = []
 
-	for batch_num in range(5):
-		time_start = datetime.now()
+	time_start = datetime.now()
 
-		#Normalising both training data and test data
-		normalised_training_data = np.apply_along_axis(normalise,1,training_data[batch_num][0:datasize])
-		normalised_test_data = np.apply_along_axis(normalise,1,test_data[0:datasize])
+	#Normalising both training data and test data
+	normalised_training_data = np.apply_along_axis(normalise,1,training_data)
+	normalised_test_data = np.apply_along_axis(normalise,1,test_data[0:datasize])
 
-		print("Data in batch {} normalised".format(batch_num+1))
+	print("Data normalised")
 
-		#Using PCA to reduce the dimensionality of the data
-		pca = PCA.loadData(normalised_training_data, 20)
-		reduced_training_data = np.apply_along_axis(pca.reduce, 1, normalised_training_data)
-		reduced_test_data = np.apply_along_axis(pca.reduce, 1, normalised_test_data)
+	#Using PCA to reduce the dimensionality of the data
+	pca = PCA.loadData(normalised_training_data, 20)
+	reduced_training_data = np.apply_along_axis(pca.reduce, 1, normalised_training_data)
+	reduced_test_data = np.apply_along_axis(pca.reduce, 1, normalised_test_data)
 
+	print("Dimensionality reduced")
 
-		#Classifying using nearest neighbor
-		kNN = kNearestNeighbor();
-		kNN.train(reduced_training_data, training_labels[batch_num][0:datasize])
-		result.append( kNN.predict(reduced_test_data, num_class	) )
+	#Classifying using nearest neighbor
+	kNN = kNearestNeighbor();
+	kNN.train(reduced_training_data, training_labels)
+	result =  kNN.predict(reduced_test_data, num_class) 
 
-		print("Batch {} done!".format(batch_num+1))
+	print("Finished")
 
-		""" Finish  """
-		time_finished = datetime.now()
-		duration = time_finished - time_start
-		print("Time = "+ str(duration))
-
-
-	""" Find the best result.
-		The label with the most number of predictions is the best result"""
-	result_matrix = np.matrix(result).T
-	best_result = np.zeros(result_matrix.shape[0])
-	for i in range(result_matrix.shape[0]):
-	    best_est = np.squeeze(np.asarray(result_matrix[i]))
-	    best_result[i] = int(mode(best_est).mode[0])
+	""" Finish  """
+	time_finished = datetime.now()
+	duration = time_finished - time_start
+	print("Time = "+ str(duration))
 
 	#Write to file
 	with open('output/output.csv', 'w') as csvfile:
 	    writer = csv.writer(csvfile, delimiter=' ',
 	                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
-	    writer.writerow(best_result)
+	    writer.writerow(result)
