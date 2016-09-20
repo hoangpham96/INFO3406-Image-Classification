@@ -96,10 +96,20 @@ if __name__ == "__main__":
 		reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
 		try:
 			result = list(map(float,reader.__next__()))
-			result2 = list(map(float,reader.__next__()))
+			#Fixing a bug where the writer would put extra line in between the two output
+			temp = list(map(float,reader.__next__()))
+			if len(temp) != 0:
+				result2 = temp
+			else:
+				result2 = list(map(float,reader.__next__()))
 		except:
 			result = map(float,reader.next())
-			result2 = map(float,reader.next())
+			#Fixing a bug where the writer would put extra line in between the two output
+			temp = map(float,reader.next())
+			if len(temp) != 0:
+				result2 = temp
+			else:
+				result2 = map(float,reader.next())
 
 	test2 = unpickle('data2/test')
 	test_class_label = test2['fine_labels']

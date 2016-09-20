@@ -5,7 +5,7 @@ from datetime import datetime
 from scipy.stats import mode
 import csv
 
-datasize = 10000
+datasize = 100
 
 
 #Unpickling a file and returning its content

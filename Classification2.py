@@ -36,7 +36,7 @@ if __name__ == "__main__":
     normalised_training_data = []
     normalised_test_data = []
     for i in range(datasize*5):
-	   normalised_training_data.append( normalise(training_data[i]) )
+        normalised_training_data.append( normalise(training_data[i]) )
 
     for i in range(datasize):
     	normalised_test_data.append( normalise(test_data[i]) )
