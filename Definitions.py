@@ -84,29 +84,24 @@ class kNearestNeighbor:
 		return Ypred
 
 class PCA:
-    def __init__(self, eigen_vectors, mean, n):
+    def __init__(self, feature_vectors, mean):
+        self.feature_vectors = feature_vectors
         self.mean = mean
-        self.eigen_vectors = eigen_vectors
-        self.__n = n
-        self.feature_vector = self.eigen_vectors[:n]
 
-    def reduce(self, vector):
-        return self.feature_vector.dot(vector - self.mean)
+    def reduce(self, x):
+        return self.feature_vectors.dot(x - self.mean)
 
-    def reconstruct(self, reduced_vector):
-        return reduced_vector.dot(self.feature_vector) + self.mean
-
-    """ Load the training data so to reduce both its and test data's dimensionality
+    """ Load the training data to reduce both its and test data's dimensionality
     	Params: data, the training data
-    			n, the number of dimensions to be reduced to
-    	Return: load the class of eigen_vectors, mean and n i.e.: call init with those values"""
+    			dim, the number of dimensions to be reduced to
+    	Return: load the class of eigen_vectors, mean and dim i.e.: call init with those values"""
     @classmethod
-    #n = 30 seems to return the most accurate result while 20 is the best for accuracy/time
-    def loadData(cls, data, n=30):
+    def loadData(cls, data, dim=20):
     	#cls is the equivalent of self to normal method
         mean = np.mean(data, axis=0)
         norm_data = data - mean
         #U contains the eigenvalues and V contains the eigenvector
         U, V = np.linalg.eigh(norm_data.T.dot(norm_data))
         V = V.T
-        return cls(np.take(V, U.argsort()[::-1], axis=0), mean, n)
+        feature_vectors = np.take(V, U.argsort()[::-1], axis=0)[0:dim]
+        return cls(feature_vectors, mean)
