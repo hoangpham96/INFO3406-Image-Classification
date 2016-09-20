@@ -31,7 +31,7 @@ if __name__ == "__main__":
 	    if result[j] == test_label[j]:
 	        count += 1
 	accuracy = count/datasize
-	print("Accuracy = {}%".format(accuracy))
+	print("Accuracy = {}%".format(accuracy*100))
 
 	"""Plotting confusion matrix"""
 	#http://stackoverflow.com/questions/5821125/how-to-plot-confusion-matrix-with-string-axis-rather-than-integer-in-python
@@ -79,7 +79,6 @@ if __name__ == "__main__":
 	plt.yticks(range(height), label_names[:height])
 
 
-	plt.show()
 
 
 
@@ -120,3 +119,5 @@ if __name__ == "__main__":
 	    if result2[j] == test_superclass_label[j]:
 	        count += 1
 	print("Accuracy = {}%".format(count*100/datasize))
+
+	plt.show()

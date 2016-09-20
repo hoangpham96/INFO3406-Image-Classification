@@ -5,7 +5,7 @@ from datetime import datetime
 from scipy.stats import mode
 import csv
 
-datasize = 1000
+datasize = 10000
 
 
 #Unpickling a file and returning its content
@@ -67,10 +67,12 @@ class kNearestNeighbor:
 		for i in range(num_test):
 		# find the k nearest training images to the ith test image
 			dist = distance(self.Xtr, X[i,:])
+			dist += 1 #prevent divide by zero
 
 			closest_neighbors = dist.argsort()[:k]
 			closest_neighbors_label = []
 			for neighbor in closest_neighbors:
+
 				closest_neighbors_label.append(self.ytr[neighbor])
 
 			#count for each label
@@ -79,7 +81,6 @@ class kNearestNeighbor:
 			#for each neighbor, their label has a weight of 1/distance^2
 			for j in range(k):
 				num[closest_neighbors_label[j]] += 1/(dist[closest_neighbors[j]]**2)
-
 			Ypred[i] = num.argmax()
 
 		return Ypred

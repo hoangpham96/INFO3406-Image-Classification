@@ -65,6 +65,7 @@ if __name__ == "__main__":
     duration = time_finished - time_start
     print("Time = "+ str(duration))
 
+
     #Write to file
     with open('output2/output.csv', 'w') as csvfile:
         writer = csv.writer(csvfile, delimiter=' ',
