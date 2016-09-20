@@ -1,6 +1,6 @@
 import csv
 import numpy as np
-from Classification import datasize, unpickle
+from Definitions import datasize, unpickle
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":

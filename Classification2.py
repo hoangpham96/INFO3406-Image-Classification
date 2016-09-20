@@ -1,4 +1,4 @@
-from Classification import *
+from Definitions import *
 
 if __name__ == "__main__":
     #Define file paths
