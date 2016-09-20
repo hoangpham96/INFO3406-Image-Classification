@@ -33,29 +33,29 @@ if __name__ == "__main__":
     time_start = datetime.now()
 
     #Normalising both training data and test data
-    normalised_training_data = []
-    normalised_test_data = []
-    for i in range(datasize*5):
-        normalised_training_data.append( normalise(training_data[i]) )
-
-    for i in range(datasize):
-    	normalised_test_data.append( normalise(test_data[i]) )
-    normalised_training_data = np.array(normalised_training_data)
-    normalised_test_data = np.array( normalised_test_data )
+    normalised_training_data = np.apply_along_axis(normalise,1,training_data)
+    normalised_test_data = np.apply_along_axis(normalise,1,test_data[0:datasize])
 
     print("Data normalised")
 
+    #Using PCA to reduce the dimensionality of the data
+    pca = PCA.loadData(normalised_training_data, 20)
+    reduced_training_data = np.apply_along_axis(pca.reduce, 1, normalised_training_data)
+    reduced_test_data = np.apply_along_axis(pca.reduce, 1, normalised_test_data)
+
+    print("Dimensionality reduced")
+
     #Classifying using nearest neighbor
     kNN = kNearestNeighbor();
-    kNN.train(normalised_training_data,training_fine_label[0:datasize*5])
-    result = kNN.predict(normalised_test_data, num_class)
+    kNN.train(reduced_training_data,training_fine_label)
+    result = kNN.predict(reduced_test_data, num_class)
 
     print("Fine lable assigned")
 
     #Classifying using nearest neighbor
     kNN2 = kNearestNeighbor();
-    kNN2.train(normalised_training_data,training_coarse_label[0:datasize*5])
-    result2 =  kNN2.predict(normalised_test_data, num_superclass)
+    kNN2.train(reduced_training_data,training_coarse_label)
+    result2 =  kNN2.predict(reduced_test_data, num_superclass)
 
     print("Coarse lable assigned")
 
