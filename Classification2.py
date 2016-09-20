@@ -39,7 +39,7 @@ if __name__ == "__main__":
     print("Data normalised")
 
     #Using PCA to reduce the dimensionality of the data
-    pca = PCA.loadData(normalised_training_data, 20)
+    pca = PCA.loadData(normalised_training_data)
     reduced_training_data = np.apply_along_axis(pca.reduce, 1, normalised_training_data)
     reduced_test_data = np.apply_along_axis(pca.reduce, 1, normalised_test_data)
 

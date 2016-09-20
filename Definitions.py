@@ -33,8 +33,7 @@ def distance(img1,img2):
 """ Normalise the data for better comparison between images
 	Params: data z, new_min, new_max
 	Return: z normalised"""
-#TODO: find the reason why using 0-1000000 is better than 0.0 - 1.0
-def normalise(z, new_min=0, new_max=1000000):
+def normalise(z, new_min=0.0, new_max=1.0):
 	z_min = np.min(z)
 	z_max = np.max(z)
 
@@ -58,7 +57,7 @@ class kNearestNeighbor:
 		Params: X, NxD where each row is a test image. N is the data size.
 				k, the number of neighbors to consider.
 		Return: the label for each test image"""
-	def predict(self, X, num_class, k=100):
+	def predict(self, X, num_class, k=int(np.sqrt(datasize))):
 		num_test = X.shape[0]
 		Ypred = np.zeros(num_test, dtype=self.ytr.dtype)
 
@@ -102,7 +101,8 @@ class PCA:
     			n, the number of dimensions to be reduced to
     	Return: load the class of eigen_vectors, mean and n i.e.: call init with those values"""
     @classmethod
-    def loadData(cls, data, n):
+    #n = 30 seems to return the most accurate result while 20 is the best for accuracy/time
+    def loadData(cls, data, n=30):
     	#cls is the equivalent of self to normal method
         mean = np.mean(data, axis=0)
         norm_data = data - mean
