@@ -1,11 +1,10 @@
 import numpy as np
 import pickle
 from datetime import datetime
-from scipy.stats import mode
 import csv
 
 #Number of test data to scale. Full = 10000
-datasize = 1000
+datasize = 10000
 
 
 #Unpickling a file and returning its content
