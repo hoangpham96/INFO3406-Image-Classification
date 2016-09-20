@@ -4,4 +4,7 @@ output/
 output2/
 __pycache__/
 plots/
+INFO3406_assignment1_query/
+query_output/
+query2_output/
 *.pyc
